@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Office Locations - Google Maps</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .map-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .map-container iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
+        
+        .offices-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .office-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid #667eea;
+        }
+        
+        .office-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .office-card.office-1 {
+            border-left-color: #e74c3c;
+        }
+        
+        .office-card.office-2 {
+            border-left-color: #3498db;
+        }
+        
+        .office-card.office-3 {
+            border-left-color: #2ecc71;
+        }
+        
+        .office-card.office-4 {
+            border-left-color: #f39c12;
+        }
+        
+        .office-card h3 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .office-icon {
+            font-size: 1.5em;
+        }
+        
+        .office-info {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .info-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #667eea;
+            min-width: 80px;
+            font-size: 0.9em;
+        }
+        
+        .info-value {
+            color: #555;
+            flex: 1;
+            font-size: 0.95em;
+            word-break: break-word;
+        }
+        
+        .coordinates {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #333;
+            margin-top: 10px;
+        }
+        
+        .all-maps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .map-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .map-item h4 {
+            padding: 20px;
+            color: white;
+            margin: 0;
+            font-size: 1.1em;
+        }
+        
+        .map-item.map-1 h4 {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .map-item.map-2 h4 {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+        
+        .map-item.map-3 h4 {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+        
+        .map-item.map-4 h4 {
+            background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+        }
+        
+        .map-item iframe {
+            width: 100%;
+            height: 350px;
+            border: none;
+        }
+        
+        .map-info {
+            padding: 15px;
+            background: #f8f9fa;
+        }
+        
+        .map-info p {
+            margin: 5px 0;
+            color: #555;
+            font-size: 0.9em;
+        }
+        
+        .map-info strong {
+            color: #2c3e50;
+        }
+        
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .all-maps-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .map-container iframe,
+            .map-item iframe {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🌍 Our Global Office Locations</h1>
+            <p>Visit us at any of our international offices</p>
+        </div>
+        
+        <!-- Main Content: Map + Office List -->
+        <div class="content-wrapper">
+            <!-- Google Map View -->
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m8!1m4!1m3!2m2!1d-73.9855!2d40.7580!1m4!1m3!1d4!1d-73.9855!2d40.7580!5e0!3m2!1sen!2sus!4v1714185600000" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            
+            <!-- Office Information Cards -->
+            <div class="offices-list">
+                <!-- Office 1 -->
+                <div class="office-card office-1">
+                    <h3><span class="office-icon">🗽</span> New York Office</h3>
+                    <div class="office-info">
+                        <div class="info-row">
+                            <span class="info-label">Address:</span>
+                            <span class="info-value">123 Broadway, New York, NY 10001, USA</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Phone:</span>
+                            <span class="info-value">+1 (212) 555-0101</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">ny@company.com</span>
+                        </div>
+                        <div class="coordinates">
+                            📍 40.7580° N, 73.9855° W
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Office 2 -->
+                <div class="office-card office-2">
+                    <h3><span class="office-icon">☀️</span> Los Angeles Office</h3>
+                    <div class="office-info">
+                        <div class="info-row">
+                            <span class="info-label">Address:</span>
+                            <span class="info-value">456 Sunset Boulevard, Los Angeles, CA 90001, USA</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Phone:</span>
+                            <span class="info-value">+1 (213) 555-0102</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">la@company.com</span>
+                        </div>
+                        <div class="coordinates">
+                            📍 34.0522° N, 118.2437° W
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Office 3 -->
+                <div class="office-card office-3">
+                    <h3><span class="office-icon">🌊</span> Chicago Office</h3>
+                    <div class="office-info">
+                        <div class="info-row">
+                            <span class="info-label">Address:</span>
+                            <span class="info-value">789 Michigan Avenue, Chicago, IL 60611, USA</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Phone:</span>
+                            <span class="info-value">+1 (312) 555-0103</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">chicago@company.com</span>
+                        </div>
+                        <div class="coordinates">
+                            📍 41.8781° N, 87.6298° W
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Office 4 -->
+                <div class="office-card office-4">
+                    <h3><span class="office-icon">🏔️</span> Seattle Office</h3>
+                    <div class="office-info">
+                        <div class="info-row">
+                            <span class="info-label">Address:</span>
+                            <span class="info-value">321 Pike Place, Seattle, WA 98101, USA</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Phone:</span>
+                            <span class="info-value">+1 (206) 555-0104</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">seattle@company.com</span>
+                        </div>
+                        <div class="coordinates">
+                            📍 47.6062° N, 122.3321° W
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Individual Maps for Each Office -->
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="color: white; font-size: 1.8em; margin-bottom: 20px;">📍 Detailed Location Maps</h2>
+        </div>
+        
+        <div class="all-maps-container">
+            <!-- New York Map -->
+            <div class="map-item map-1">
+                <h4>🗽 New York Office</h4>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.2219901290355!2d-73.98550292345559!3d40.75800707134755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a316bb945e1%3A0x921b15fb53868d0!2s123%20Broadway%2C%20New%20York%2C%20NY%2010001!5e0!3m2!1sen!2sus!4v1714185600000" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div class="map-info">
+                    <p><strong>Address:</strong> 123 Broadway, New York, NY 10001</p>
+                    <p><strong>Coordinates:</strong> 40.7580° N, 73.9855° W</p>
+                    <p><strong>Phone:</strong> +1 (212) 555-0101</p>
+                </div>
+            </div>
+            
+            <!-- Los Angeles Map -->
+            <div class="map-item map-2">
+                <h4>☀️ Los Angeles Office</h4>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3307.2487857476066!2d-118.24371302345557!3d34.05221087104882!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c75ddc27f09f%3A0xce2b3f23e8f8e8e8!2s456%20Sunset%20Boulevard%2C%20Los%20Angeles%2C%20CA%2090001!5e0!3m2!1sen!2sus!4v1714185600000" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div class="map-info">
+                    <p><strong>Address:</strong> 456 Sunset Boulevard, Los Angeles, CA 90001</p>
+                    <p><strong>Coordinates:</strong> 34.0522° N, 118.2437° W</p>
+                    <p><strong>Phone:</strong> +1 (213) 555-0102</p>
+                </div>
+            </div>
+            
+            <!-- Chicago Map -->
+            <div class="map-item map-3">
+                <h4>🌊 Chicago Office</h4>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2969.750852671239!2d-87.62977602345557!3d41.87809807107146!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x880e2ca55810a4fb%3A0x74f5b9436442d33a!2s789%20Michigan%20Avenue%2C%20Chicago%2C%20IL%2060611!5e0!3m2!1sen!2sus!4v1714185600000" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div class="map-info">
+                    <p><strong>Address:</strong> 789 Michigan Avenue, Chicago, IL 60611</p>
+                    <p><strong>Coordinates:</strong> 41.8781° N, 87.6298° W</p>
+                    <p><strong>Phone:</strong> +1 (312) 555-0103</p>
+                </div>
+            </div>
+            
+            <!-- Seattle Map -->
+            <div class="map-item map-4">
+                <h4>🏔️ Seattle Office</h4>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2689.2821821821822!2d-122.33209502345557!3d47.60619407092315!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x54901ec07a0c1e23%3A0x16466a4496b2cb9d!2s321%20Pike%20Place%2C%20Seattle%2C%20WA%2098101!5e0!3m2!1sen!2sus!4v1714185600000" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div class="map-info">
+                    <p><strong>Address:</strong> 321 Pike Place, Seattle, WA 98101</p>
+                    <p><strong>Coordinates:</strong> 47.6062° N, 122.3321° W</p>
+                    <p><strong>Phone:</strong> +1 (206) 555-0104</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
