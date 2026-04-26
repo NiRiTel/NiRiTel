@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Office Locations - Google Maps</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
     <style>
         * {
             margin: 0;
@@ -53,10 +54,11 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
         
-        .map-container iframe {
+        #mainMap {
             width: 100%;
             height: 500px;
             border: none;
+            border-radius: 12px;
         }
         
         .offices-list {
@@ -149,6 +151,25 @@
             margin-top: 10px;
         }
         
+        .map-link-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-top: 12px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .map-link-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
         .all-maps-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -186,7 +207,7 @@
             background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
         }
         
-        .map-item iframe {
+        .map-item-map {
             width: 100%;
             height: 350px;
             border: none;
@@ -207,6 +228,16 @@
             color: #2c3e50;
         }
         
+        .map-info a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .map-info a:hover {
+            text-decoration: underline;
+        }
+        
         @media (max-width: 1024px) {
             .content-wrapper {
                 grid-template-columns: 1fr;
@@ -222,8 +253,8 @@
                 grid-template-columns: 1fr;
             }
             
-            .map-container iframe,
-            .map-item iframe {
+            #mainMap,
+            .map-item-map {
                 height: 400px;
             }
         }
@@ -239,9 +270,9 @@
         
         <!-- Main Content: Map + Office List -->
         <div class="content-wrapper">
-            <!-- Google Map View - Overview Map -->
+            <!-- Interactive Map View -->
             <div class="map-container">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d13609.781321891396!2d-95.7128919!3d37.27192595!3m2!1i1024!2i768!4f13.1!1m0!5e0!3m2!1sen!2sus!4v1714185600000" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div id="mainMap"></div>
             </div>
             
             <!-- Office Information Cards -->
@@ -265,6 +296,7 @@
                         <div class="coordinates">
                             📍 40.7580° N, 73.9855° W
                         </div>
+                        <a href="https://www.google.com/maps/search/123+Broadway+New+York+NY+10001" target="_blank" class="map-link-button">📍 View in Google Maps</a>
                     </div>
                 </div>
                 
@@ -287,6 +319,7 @@
                         <div class="coordinates">
                             📍 34.0522° N, 118.2437° W
                         </div>
+                        <a href="https://www.google.com/maps/search/456+Sunset+Boulevard+Los+Angeles+CA+90001" target="_blank" class="map-link-button">📍 View in Google Maps</a>
                     </div>
                 </div>
                 
@@ -309,6 +342,7 @@
                         <div class="coordinates">
                             📍 41.8781° N, 87.6298° W
                         </div>
+                        <a href="https://www.google.com/maps/search/789+Michigan+Avenue+Chicago+IL+60611" target="_blank" class="map-link-button">📍 View in Google Maps</a>
                     </div>
                 </div>
                 
@@ -331,6 +365,7 @@
                         <div class="coordinates">
                             📍 47.6062° N, 122.3321° W
                         </div>
+                        <a href="https://www.google.com/maps/search/321+Pike+Place+Seattle+WA+98101" target="_blank" class="map-link-button">📍 View in Google Maps</a>
                     </div>
                 </div>
             </div>
@@ -345,47 +380,132 @@
             <!-- New York Map -->
             <div class="map-item map-1">
                 <h4>🗽 New York Office</h4>
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.2219901290355!2d-73.98707632345559!3d40.75800707134755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a316bb945e1%3A0xb81f2cc1f70558a!2s123%20Broadway%2C%20New%20York%2C%20NY%2010006!5e0!3m2!1sen!2sus!4v1650281774315" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div id="nyMap" class="map-item-map"></div>
                 <div class="map-info">
                     <p><strong>Address:</strong> 123 Broadway, New York, NY 10001</p>
                     <p><strong>Coordinates:</strong> 40.7580° N, 73.9855° W</p>
                     <p><strong>Phone:</strong> +1 (212) 555-0101</p>
+                    <p><a href="https://www.google.com/maps/search/123+Broadway+New+York+NY+10001" target="_blank">🔗 Open in Google Maps →</a></p>
                 </div>
             </div>
             
             <!-- Los Angeles Map -->
             <div class="map-item map-2">
                 <h4>☀️ Los Angeles Office</h4>
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3307.6719396202533!2d-118.25175592345557!3d34.05217737104882!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c75dfc8c3c3d%3A0x63f0b2e8f9d5e8e8!2s456%20Sunset%20Boulevard%2C%20Los%20Angeles%2C%20CA%2090001!5e0!3m2!1sen!2sus!4v1650281826829" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div id="laMap" class="map-item-map"></div>
                 <div class="map-info">
                     <p><strong>Address:</strong> 456 Sunset Boulevard, Los Angeles, CA 90001</p>
                     <p><strong>Coordinates:</strong> 34.0522° N, 118.2437° W</p>
                     <p><strong>Phone:</strong> +1 (213) 555-0102</p>
+                    <p><a href="https://www.google.com/maps/search/456+Sunset+Boulevard+Los+Angeles+CA+90001" target="_blank">🔗 Open in Google Maps →</a></p>
                 </div>
             </div>
             
             <!-- Chicago Map -->
             <div class="map-item map-3">
                 <h4>🌊 Chicago Office</h4>
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2970.0053949265767!2d-87.63163552345557!3d41.87809807107146!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x880e2ca55810a4fb%3A0x74f5b9436442d33a!2s789%20Michigan%20Avenue%2C%20Chicago%2C%20IL%2060611!5e0!3m2!1sen!2sus!4v1650281851234" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div id="chicagoMap" class="map-item-map"></div>
                 <div class="map-info">
                     <p><strong>Address:</strong> 789 Michigan Avenue, Chicago, IL 60611</p>
                     <p><strong>Coordinates:</strong> 41.8781° N, 87.6298° W</p>
                     <p><strong>Phone:</strong> +1 (312) 555-0103</p>
+                    <p><a href="https://www.google.com/maps/search/789+Michigan+Avenue+Chicago+IL+60611" target="_blank">🔗 Open in Google Maps →</a></p>
                 </div>
             </div>
             
             <!-- Seattle Map -->
             <div class="map-item map-4">
                 <h4>🏔️ Seattle Office</h4>
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2689.275641351246!2d-122.34097802345557!3d47.60819707092315!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x549015f2e8c5c5c5%3A0x8f5e5e5e5e5e5e5e!2s321%20Pike%20Place%2C%20Seattle%2C%20WA%2098101!5e0!3m2!1sen!2sus!4v1650281876543" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div id="seattleMap" class="map-item-map"></div>
                 <div class="map-info">
                     <p><strong>Address:</strong> 321 Pike Place, Seattle, WA 98101</p>
                     <p><strong>Coordinates:</strong> 47.6062° N, 122.3321° W</p>
                     <p><strong>Phone:</strong> +1 (206) 555-0104</p>
+                    <p><a href="https://www.google.com/maps/search/321+Pike+Place+Seattle+WA+98101" target="_blank">🔗 Open in Google Maps →</a></p>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script>
+        // Office locations with details
+        const offices = [
+            {
+                name: 'New York',
+                lat: 40.7580,
+                lng: -73.9855,
+                color: '#e74c3c',
+                mapId: 'nyMap'
+            },
+            {
+                name: 'Los Angeles',
+                lat: 34.0522,
+                lng: -118.2437,
+                color: '#3498db',
+                mapId: 'laMap'
+            },
+            {
+                name: 'Chicago',
+                lat: 41.8781,
+                lng: -87.6298,
+                color: '#2ecc71',
+                mapId: 'chicagoMap'
+            },
+            {
+                name: 'Seattle',
+                lat: 47.6062,
+                lng: -122.3321,
+                color: '#f39c12',
+                mapId: 'seattleMap'
+            }
+        ];
+
+        // Initialize main map
+        const mainMap = L.map('mainMap').setView([39.8283, -98.5795], 4);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(mainMap);
+
+        // Add markers to main map
+        offices.forEach(office => {
+            const marker = L.circleMarker([office.lat, office.lng], {
+                radius: 12,
+                fillColor: office.color,
+                color: '#fff',
+                weight: 3,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(mainMap);
+            
+            marker.bindPopup(`
+                <div style="font-family: Arial;">
+                    <h4 style="margin: 0 0 8px 0; color: ${office.color};">${office.name}</h4>
+                    <p style="margin: 4px 0; font-size: 12px;">Click card for details</p>
+                </div>
+            `);
+        });
+
+        // Initialize individual maps for each office
+        offices.forEach(office => {
+            const map = L.map(office.mapId).setView([office.lat, office.lng], 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            L.circleMarker([office.lat, office.lng], {
+                radius: 14,
+                fillColor: office.color,
+                color: '#fff',
+                weight: 3,
+                opacity: 1,
+                fillOpacity: 0.9
+            }).addTo(map);
+        });
+    </script>
 </body>
 </html>
